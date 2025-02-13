@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Entregas</title>
+    <style>
+        .title {
+            background-color: rgb(0, 0, 0);
+            color: white;
+            padding-left: 10px;
+        }
+
+        .cinza {
+            background-color: rgb(234, 234, 234);
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="margin-left: 3%; margin-right: 3%;">
+        <h2 class="title"> 1 - INDICAR PASTAS</h2>
+        <div>
+            Inserir o caminho das pastas. Por exemplo:<br>
+            <b>Source:</b> C:\Users\nmjfa\Desktop\Ficheiros\Data<br>
+            <b>Output:</b> C:\Users\nmjfa\Desktop\Ficheiros\Data\Entrega01<br>
+        </div><br>
+
+        <b>1) Source:</b> <input type="text" id="sourceFolder" webkitdirectory directory style="width: 50%"> <br />
+        <b>2) Output:</b> <input type="text" id="outputFolder" webkitdirectory directory style="width: 50%"> <br />
+
+        <h2 class="title"> 2 - VERIFICAR FICHEIROS/PASTAS</h2>
+        <div class="cinza">
+            Selecionar as checkboxes para fazer as respectivas verificações. As mensagens de erro aparecem no final da
+            página.
+        </div>
+        <div>
+            <p><b>Preencher campo 1)</b></p>
+        </div>
+
+        <p>
+            <input type="checkbox" id="checkFileName">
+            <label for="checkFileName">Formato do nome dos ficheiros (formato correto:
+                SIGLA_nINV_2/3D_XXX.ext)</label><br>
+            <input type="checkbox" id="checkParentFolder">
+            <label for="checkParentFolder">Ficheiro corresponde à pasta parente (Nivel: 1 - comparar com pasta pai, 2 -
+                compara com pasta avô, etc)</label> <b>Nivel:</b> <input type="number" id="parentLevel" value="2">
+        </p>
+
+        <input type="button" id="verifyFiles" value="Verificar ficheiros/pastas" onclick="verifyFiles()">
+
+
+        <h2 class="title"> 3 - VERIFICAR DUPLICADOS</h2>
+        <div class="cinza">
+            Verifica se existem objectos duplicados, consultando os nº inv. existentes no Excel da Entrega (campo 5))
+            com os nº inv. dos objectos nas pastas (campo 1)). Os resultados aparecem no fim da página.<br>
+            <b>IMPORTANTE:</b> Os ficheiros tem que ter o nome na forma SIGLA_nINV_2/3D_XXX.ext
+        </div>
+        <div>
+            <p><b>Preencher campos 1) e 5)</b></p>
+        </div>
+        <input type="button" id="checkDuplicates" value="Verificar duplicados" onclick="checkDuplicates()">
+        &nbsp;
+        <input type="button" id="removeDuplicates" style="display: none;" value="Apagar duplicados"
+            onclick="removeDuplicates();">
+
+        
+        <h2 class="title"> 4 - COPIAR JPGs</h2>
+        <div class=" cinza">
+            Copia todos os ficheiros JPG existentes na Source para uma nova estrutura de pastas final para a entrega,
+            no Output.
+
+        </div><br>
+
+        <input type="button" id="extractJPGS" value="Copiar JPGs" onclick="copyJPG();">
+
+        <h2 class="title""> 5 - COPIAR GLBs </h2>
+        <div class=" cinza">
+
+            Copia todos os ficheiros GLBs existentes na Source para uma nova estrutura de pastas final para a
+            entrega, no Output.<br>
+            Cria uma pasta "tmp" com todos os objectos GLB juntos, no Output. Correr o Blender definindo esta pasta
+            como source e output.
+
+    </div><br>
+
+    <input type="button" id="extractJPGS" value="Copiar GLBs" onclick="copyGLB();">
+
+    <h2 class="title"> 6 - CORRER BLENDER</h2>
+    <b>Correr o add-on do blender para geras as screenshots. </b><br><br>
+        <div class=" cinza">
+
+
+        Inserir o caminho onde foram geradas as imagens, por exemplo:<br>
+        C:\Users\nmjfa\Desktop\Ficheiros\Data\Entrega01\tmp\0
+
+        Clicar no botão abaixo irá copiar as imagens geradas para dentro das pastas dos GLBs correspondentes.
+
+        </div><br>
+
+        <b>3) Source PNGs geradas:</b> <input type="text" id="sourceGeneratedPNGS" webkitdirectory directory
+            style="width: 50%">
+        <br /><br>
+
+        <input type="button" id="extractJPGS" value="Já corri o Blender" onclick="copyScreenshots()"><br>
+
+        <h2 class="title""> 7 - TROCAR ESPAÇOS POR _</h2>
+        <div class=" cinza">
+            Irá trocar os espaços por _ dos ficheiros e pastas
+        </div><br>
+        <b>Ter campo 2) preenchido.</b><br><br>
+
+            <input type="button" id="extractJPGS" value="Trocar" onclick="removeSpaces()">
+
+            <h2 class="title"> 8 - GERAR EXCEL</h2>
+            <div style="background-color: rgb(234, 234, 234);">
+                <p>
+                    <b style="color: red; ">IMPORTANTE: reorganizar as sheets dos dados do museum:<br>  
+                        ⚠️2D na 1ª posição,<br>  
+                        ⚠️3D na 2ª posição.</b><br>
+                        ⚠️Procurar possiveis erros na consola!
+                </p>
+            </div>
+
+            <b>4) Excel dos dados do museu:</b> <input type="text" id="sourceMuseumData" style="width: 50%"> <br />
+            <b>5) Excel da última entrega:</b> <input type="text" id="sourceTemplate" style="width: 50%"> <br />
+            <b>6) Nº Entrega:</b> <input type="text" id="deliveryNumber" webkitdirectory directory style="width: 50%">
+            <br />
+            <b>7) Nº ultima linha header 2D: </b><input type="text" id="lastRowHeader2D" webkitdirectory directory
+                style="width: 50%">
+            <br />
+            <b>8) Nº ultima linha header 3D:</b> <input type="text" id="lastRowHeader3D" webkitdirectory directory
+                style="width: 50%">
+            <br /><br>
+            <input type="button" id="generateExcel" value="Gerar Excel" onclick="generateExcel()">
+
+            <br><br>
+            <h2>MENSAGEM:</h2>
+            <p id="messages"></p>
+            </div>
+
+            <script src="scripts.js"></script>
+</body>
+
+</html>
